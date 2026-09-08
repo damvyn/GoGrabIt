@@ -1,68 +1,165 @@
-Import-Module 'C:\Dev\Projects\GoGrabIt\Tests\Pester\6.1.0\Pester.psm1' -Force
-
-$scriptPath = Join-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -ChildPath 'Scripts\New-7Zip.ps1'
+#Requires -Modules @{ ModuleName = 'Pester'; ModuleVersion = '6.1.0' }
 
 Describe 'New-7Zip.ps1' {
-    BeforeEach {
-        $global:TestDestination = Join-Path -Path ([System.IO.Path]::GetTempPath()) -ChildPath ([System.Guid]::NewGuid().ToString())
-        $global:FakeRelease = [pscustomobject]@{
-            tag_name = 'v27.00'
+    BeforeAll {
+        $script:RootPath = Split-Path -Path $PSScriptRoot -Parent
+        $script:ScriptDir = Join-Path -Path $RootPath -ChildPath "Scripts"
+        $script:ScriptPath = Join-Path -Path $ScriptDir -ChildPath "New-7Zip.ps1"
+
+        $script:FakeReply = [pscustomobject]@{
+            tag_name = 'v21.07'
             assets = @(
                 [pscustomobject]@{
-                    Name = '7z2407-x64.msi'
-                    browser_download_url = 'https://example.com/7z2407-x64.msi'
+                    name = '7z2107-x64.msi'
+                    browser_download_url = 'https://example.com/download/7z2107-x64.msi'
+                },
+                [pscustomobject]@{
+                    name = '7z2107-x64.exe'
+                    browser_download_url = 'https://example.com/download/7z2107-x64.exe'
+                },
+                [pscustomobject]@{
+                    name = '7z2107.msi'
+                    browser_download_url = 'https://example.com/download/7z2107.msi'
                 }
             )
         }
+    }
 
-        Mock Invoke-RestMethod {
-            return $global:FakeRelease
+    Context 'Happy Path' {
+        BeforeEach {
+            $TestDir = Join-Path -Path $TestDrive -ChildPath $((new-guid).guid)
+            $null = New-Item -Path $TestDir -ItemType:Directory -Force
+
+            Mock Invoke-RestMethod { return $FakeReply }
+
+            Mock Invoke-WebRequest {
+                param($Uri, $OutFile)
+                Set-Content -Path $OutFile -Value 'fake msi content' -Force
+            } -ParameterFilter { $OutFile }
+
+            $script:Result = & $ScriptPath -Destination $TestDir
         }
 
-        Mock Invoke-WebRequest {
-            param(
-                [Parameter(Mandatory = $true)] [string]$OutFile
-            )
-
-            $directory = Split-Path -Path $OutFile -Parent
-            if (-not (Test-Path -Path $directory)) {
-                $null = New-Item -Path $directory -ItemType Directory -Force
+        It 'Call Invoke-RestMethod for correct API' {
+            Should -Invoke Invoke-RestMethod -Times 1 -Exactly -ParameterFilter {
+                $Uri -eq 'https://api.github.com/repos/ip7z/7zip/releases/latest'
             }
+        }
 
-            [System.IO.File]::WriteAllBytes($OutFile, [byte[]](0x00, 0x01, 0x02, 0x03))
+        It 'Search patter 7z*x64.msi select correct asset' {
+            Should -Invoke Invoke-WebRequest -Times 1 -Exactly -ParameterFilter {
+                $Uri -eq 'https://example.com/download/7z2107-x64.msi'
+            }
+        }
+
+        It 'Create folder structure Vendor\Product-Version' {
+            $expectedDir = Join-Path $TestDir 'Igor Pavlov\7-Zip-21.07'
+            $expectedDir | Should -Exist
+        }
+
+        It 'Download msi to the Vendor\Product-Version' {
+            $expectedFile = Join-Path $TestDir 'Igor Pavlov\7-Zip-21.07\7z2107-x64.msi'
+            $expectedFile | Should -Exist
+        }
+
+        It 'Create Install.ps1 script' {
+            $expectedInstallScript = Join-Path $TestDir 'Igor Pavlov\7-Zip-21.07\Install.ps1'
+            $expectedInstallScript | Should -Exist
+        }
+
+        It 'Install.ps1 contains correct values' {
+            $installScript = Join-Path $TestDir 'Igor Pavlov\7-Zip-21.07\Install.ps1'
+            $content = Get-Content -Path $installScript -Raw
+            $content | Should -Match ([regex]::Escape('7z2107-x64.msi'))
+            $content | Should -Match 'ALLUSERS=1'
+            $content | Should -Match 'REBOOT=ReallySuppress'
+            $content | Should -Match '/qb'
         }
     }
 
-    It 'creates the expected output folder, downloads the installer, and writes Install.ps1' {
-        & $scriptPath -Destination $global:TestDestination
+    Context 'Call without -Destination' {
 
-        $versionDir = Join-Path -Path $global:TestDestination -ChildPath 'Igor Pavlov\7-Zip-27.00'
-        $installerPath = Join-Path -Path $versionDir -ChildPath '7z2407-x64.msi'
-        $installScriptPath = Join-Path -Path $versionDir -ChildPath 'Install.ps1'
+        It 'Use $PSScriptRoot as default destination root' {
+            Mock Invoke-RestMethod { return $FakeReply }
+            Mock Invoke-WebRequest {
+                param($Uri, $OutFile)
+                Set-Content -Path $OutFile -Value 'fake msi content' -Force
+            } -ParameterFilter { $OutFile }
 
-        Test-Path -Path $versionDir | Should -BeTrue
-        Test-Path -Path $installerPath | Should -BeTrue
-        Test-Path -Path $installScriptPath | Should -BeTrue
+            $expectedDir = Join-Path $ScriptDir 'Igor Pavlov\7-Zip-21.07'
 
-        $installScriptContent = Get-Content -Path $installScriptPath -Raw
-        $installScriptContent | Should -Match 'msiexec'
-        $installScriptContent | Should -Match 'ALLUSERS=1'
-        $installScriptContent | Should -Match '7z2407-x64\.msi'
+            try {
+                & $ScriptPath
+                $expectedDir | Should -Exist
+            }
+            finally {
+                Remove-Item -Path (Join-Path $ScriptDir 'Igor Pavlov') -Recurse -Force -ErrorAction SilentlyContinue
+            }
+        }
     }
 
-    It 'warns clearly when the GitHub release has no matching asset' {
-        $global:FakeRelease = [pscustomobject]@{
-            tag_name = 'v27.00'
-            assets = @(
-                [pscustomobject]@{
-                    Name = 'setup.exe'
-                    browser_download_url = 'https://example.com/setup.exe'
-                }
-            )
+    Context 'GitHub API failed' {
+        BeforeEach {
+            $script:TestDir = Join-Path $TestDrive $((new-guid).guid)
+            New-Item -Path $TestDir -ItemType Directory -Force | Out-Null
+
+            Mock Invoke-RestMethod { throw 'Unable to connect to the remote server' }
+            $script:Result = & $ScriptPath -Destination $TestDir
         }
 
-        $output = & $scriptPath -Destination $global:TestDestination 2>&1
+        It 'Return 1' {
+            $Result | Should -Be 1
+        }
+    }
 
-        $output | Should -Match 'No asset matched'
+    Context 'Failed to create folder' {
+        BeforeEach {
+            $script:TestDir = Join-Path $TestDrive $((new-guid).guid)
+            New-Item -Path $TestDir -ItemType Directory -Force | Out-Null
+
+            Mock Invoke-RestMethod { return $FakeReply }
+            Mock New-Item { throw 'Access to the path is denied' }
+            $script:Result = & $ScriptPath -Destination $TestDir
+        }
+
+        It 'Return 1' {
+            $Result | Should -Be 1
+        }
+    }
+
+    Context 'Cannot download a file' {
+        BeforeEach {
+            $TestDir = Join-Path $TestDrive $((new-guid).guid)
+            New-Item -Path $TestDir -ItemType Directory -Force | Out-Null
+
+            Mock Invoke-RestMethod { return $FakeReply }
+            Mock Invoke-WebRequest { throw 'The remote server returned an error: (404) Not Found.' }
+
+            $script:Result = & $ScriptPath -Destination $TestDir
+        }
+
+        It 'Return 1' {
+            $Result | Should -Be 1
+        }
+    }
+
+    Context 'Cannot create install.ps1' {
+        BeforeEach {
+            $script:TestDir = Join-Path $TestDrive $((new-guid).guid)
+            New-Item -Path $TestDir -ItemType Directory -Force | Out-Null
+
+            Mock Invoke-RestMethod { return $FakeReply }
+            Mock Invoke-WebRequest {
+                param($Uri, $OutFile)
+                Set-Content -Path $OutFile -Value 'fake msi content' -Force
+            } -ParameterFilter { $OutFile }
+            Mock Out-File { throw 'Access to the path is denied' }
+
+            $script:Result = & $ScriptPath -Destination $TestDir
+        }
+
+        It 'Return 1' {
+            $Result | Should -Be 1
+        }
     }
 }
