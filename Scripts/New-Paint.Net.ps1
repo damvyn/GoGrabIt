@@ -66,6 +66,7 @@ try {
 
 # Extract installer from zip archive
 try {
+    Write-Host " * Expand '$FileName' to '$InstallerDir'"
     Expand-Archive -Path $InstallerPath -DestinationPath $InstallerDir
 } catch {
     Write-Host " * $($_.Exception.Message)" -ForegroundColor Red
@@ -81,6 +82,7 @@ try {
 
 $InstallerPath = (Get-ChildItem -Path $InstallerDir -Filter "$SearchPattern*msi"|
     Select-Object -First 1).FullName
+$FileName = Split-Path -Path $InstallerPath -Leaf
 
 # Create install script
 $Template = @'
