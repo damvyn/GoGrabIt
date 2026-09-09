@@ -53,22 +53,22 @@ Describe 'New-Notepad++.ps1' {
         }
 
         It 'Create folder structure Vendor\Product-Version' {
-            $expectedDir = Join-Path $TestDir 'Don Ho\Notepad++-8.5.3'
+            $expectedDir = Join-Path $TestDir 'Notepad++ team\Notepad++-8.5.3'
             $expectedDir | Should -Exist
         }
 
         It 'Download msi to the Vendor\Product-Version' {
-            $expectedFile = Join-Path $TestDir 'Don Ho\Notepad++-8.5.3\npp.8.5.3.Installer.x64.msi'
+            $expectedFile = Join-Path $TestDir 'Notepad++ team\Notepad++-8.5.3\npp.8.5.3.Installer.x64.msi'
             $expectedFile | Should -Exist
         }
 
         It 'Create Install.ps1 script' {
-            $expectedInstallScript = Join-Path $TestDir 'Don Ho\Notepad++-8.5.3\Install.ps1'
+            $expectedInstallScript = Join-Path $TestDir 'Notepad++ team\Notepad++-8.5.3\Install.ps1'
             $expectedInstallScript | Should -Exist
         }
 
         It 'Install.ps1 contains correct values' {
-            $installScript = Join-Path $TestDir 'Don Ho\Notepad++-8.5.3\Install.ps1'
+            $installScript = Join-Path $TestDir 'Notepad++ team\Notepad++-8.5.3\Install.ps1'
             $content = Get-Content -Path $installScript -Raw
             $content | Should -Match ([regex]::Escape('npp.8.5.3.Installer.x64.msi'))
             $content | Should -Match 'ALLUSERS=1'
@@ -86,14 +86,14 @@ Describe 'New-Notepad++.ps1' {
                 Set-Content -Path $OutFile -Value 'fake msi content' -Force
             } -ParameterFilter { $OutFile }
 
-            $expectedDir = Join-Path $ScriptDir 'Don Ho\Notepad++-8.5.3'
+            $expectedDir = Join-Path $ScriptDir 'Notepad++ team\Notepad++-8.5.3'
 
             try {
                 & $ScriptPath
                 $expectedDir | Should -Exist
             }
             finally {
-                Remove-Item -Path (Join-Path $ScriptDir 'Don Ho') -Recurse -Force -ErrorAction SilentlyContinue
+                Remove-Item -Path (Join-Path $ScriptDir 'Notepad++ team') -Recurse -Force -ErrorAction SilentlyContinue
             }
         }
     }
