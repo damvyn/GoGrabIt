@@ -8,7 +8,7 @@ $RootPath = if ($Destination) { $Destination } else { $PsScriptRoot }
 
 # Product information
 $ProductName = 'Notepad++'
-$VendorName = 'Don Ho'
+$VendorName = 'Notepad++ team'
 $ProductUrl = 'https://api.github.com/repos/notepad-plus-plus/notepad-plus-plus/releases/latest'
 $SearchPattern = '*Installer.x64.msi'
 $InstallParams = '/i `"$PSScriptRoot\<FILE>`" ALLUSERS=1 REBOOT=ReallySuppress /qb'
