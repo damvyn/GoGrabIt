@@ -2,7 +2,7 @@
 param( [string]$Destination )
 
 # Check destination
-$rootPath = if ([string]::IsNullOrEmpty($Destination)) { $Destination } 
+$rootPath = if ([string]::IsNullOrEmpty($Destination)) { $Destination }
 else { $PsScriptRoot }
 
 # Product information
@@ -33,7 +33,7 @@ try {
 
 # get productVersion
 $version = $response.tag_name -replace '[A-Za-z]', ''
-if ($version -match "\d+(\.\d+)+)") {
+if ($version -match "\d+(\.\d+)+") {
     Write-Host " * Found product version $productVersion"
 } else {
     Write-Host " * Cannot detect product version." @fail
@@ -41,7 +41,7 @@ if ($version -match "\d+(\.\d+)+)") {
 }
 
 # get downloadUrl
-$downloadUrl = $response.assets | 
+$downloadUrl = $response.assets |
     Where-Object{ $_.name -like $searchPattern } |
     Select-Object -First 1 -ExpandProperty browser_download_url
 $downloadUrl = @($downloadUrl | Where-Object { $_ })

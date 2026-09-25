@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param(
     [string]$Destination
 )
@@ -31,7 +31,7 @@ try {
 }
 
 $Version = $GitHubReply.tag_name -replace '[A-Za-z]', ''
-$DownloadUrl = ($GitHubReply.assets | 
+$DownloadUrl = ($GitHubReply.assets |
                 Where-Object{$_.Name -like $SearchPattern}
                ).browser_download_url
 Write-Host " * Found version $Version"
@@ -74,11 +74,11 @@ $execute = "<EXE>"
 $withParams = "<PARAMS>"
 $exitCodes = <ExitCodes>
 
-try { 
-    $exitCode = ( Start-Process -FilePath $execute -ArgumentList $withParams -Wait -PassThru ).ExitCode 
+try {
+    $exitCode = ( Start-Process -FilePath $execute -ArgumentList $withParams -Wait -PassThru ).ExitCode
 } catch {  Write-Host $($_.Exception.Message) -ForegroundColor Red }
 
-if ($exitCode -notin $ExitCodes) { 
+if ($exitCode -notin $ExitCodes) {
      Write-Host "Unexpected exit code: $exitCode" -ForegroundColor Red }
 
 return $exitCode

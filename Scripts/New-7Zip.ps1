@@ -2,7 +2,7 @@
 param( [string]$Destination )
 
 # Check destination
-$rootPath = if ([string]::IsNullOrEmpty($Destination)) { $Destination } 
+$rootPath = if ([string]::IsNullOrEmpty($Destination)) { $Destination }
 else { $PsScriptRoot }
 
 # Product information
@@ -33,7 +33,7 @@ try {
 
 # get productVersion
 $version = $response.tag_name -replace '[A-Za-z]', ''
-if ($version -match "\d+(\.\d+)+)") {
+if ($version -match "\d+(\.\d+)+") {
     Write-Host " * Found product version $productVersion"
 } else {
     Write-Host " * Cannot detect product version." @fail
@@ -41,7 +41,7 @@ if ($version -match "\d+(\.\d+)+)") {
 }
 
 # get downloadUrl
-$downloadUrl = $response.assets | 
+$downloadUrl = $response.assets |
     Where-Object { $_.name -like $searchPattern } |
     Select-Object -First 1 -ExpandProperty browser_download_url
 if ([string]::IsNullOrEmpty($downloadUrl)) {
@@ -92,14 +92,14 @@ $installParams = @{
     'PassThru' = $true
 }
 
-try { 
-    $exitCode = ( Start-Process @installParams).ExitCode 
+try {
+    $exitCode = ( Start-Process @installParams).ExitCode
 } catch {
     Write-Host $($_.Exception.Message) -ForegroundColor Red
     exit 1
 }
 
-if ($exitCode -notin $exitCodes) { 
+if ($exitCode -notin $exitCodes) {
      Write-Host "Unexpected exit code: $exitCode" -ForegroundColor Red
 } else {
     Write-Host "Installation complete with exit code $exitCode"
