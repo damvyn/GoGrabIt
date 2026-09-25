@@ -1,119 +1,139 @@
 [CmdletBinding()]
-param(
-    [string]$Destination
-)
+param( [string]$Destination )
 
 # Check destination
-$RootPath = if ($Destination) { $Destination } else { $PsScriptRoot }
+$rootPath = if ([string]::IsNullOrEmpty($Destination)) { $Destination } 
+else { $PsScriptRoot }
 
 # Product information
-$ProductName = 'PaintDotNet'
-$VendorName = 'dotPND'
-$ProductUrl = 'https://api.github.com/repos/paintdotnet/release/releases/latest'
-$SearchPattern = '*winmsi*x64'
-$InstallParams = '/i `"$PSScriptRoot\<FILE>`" ALLUSERS=1 REBOOT=ReallySuppress /qb'
-$ExitCodes = "0, 3010"
+$productName = 'PaintDotNet'
+$vendorName = 'dotPND'
+$productUrl = 'https://api.github.com/repos/paintdotnet/release/releases/latest'
+$searchPattern = '*winmsi*x64*zip'
+$installParams = '/i `"$PSScriptRoot\<FILE>`" ALLUSERS=1 REBOOT=ReallySuppress /qb'
+$exitCodes = "0, 3010"
+
+$fail = @{'ForegroundColor' = 'Red'}
 
 # Request data from GitHub to get version and direct download link
-Write-Host "Build installation for $VendorName $ProductName :" -ForegroundColor Yellow
+Write-Host "Build installation for $vendorName $productName :" -ForegroundColor Yellow
 $ProgressPreference = 'SilentlyContinue' # disable progress bar and speed-up download process
-$Params = @{
-    'Uri'=$ProductUrl
+$requestParams = @{
+    'Uri'=$productUrl
     'UseBasicParsing'=$true
     'DisableKeepAlive'=$true
     'ErrorAction'='Stop'
 }
 try {
-    $GitHubReply = Invoke-RestMethod @Params
+    $response = Invoke-RestMethod @requestParams
 } catch {
-    Write-Host " * $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host " * $($_.Exception.Message)" @fail
     return 1
 }
 
-$Version = $GitHubReply.tag_name -replace '[A-Za-z]', ''
-$DownloadUrl = ($GitHubReply.assets | 
-                Where-Object{$_.Name -like "$SearchPattern*zip"}
-               ).browser_download_url
-Write-Host " * Found version $Version"
+# get productVersion
+$version = $response.tag_name -replace '[A-Za-z]', ''
+if ($version -match "\d+(\.\d+)+)") {
+    Write-Host " * Found product version $productVersion"
+} else {
+    Write-Host " * Cannot detect product version." @fail
+    exit 1
+}
+
+# get downloadUrl
+$downloadUrl = $response.assets | 
+    Where-Object{ $_.name -like $searchPattern } |
+    Select-Object -First 1 -ExpandProperty browser_download_url
+$downloadUrl = @($downloadUrl | Where-Object { $_ })
+if ([string]::IsNullOrEmpty($downloadUrl)) {
+    Write-Host " * Download link was not detected" @fail
+    return 1
+} else {
+    Write-Host " * Found download link $downloadUrl"
+}
 
 # Define variables to build path like Root\Vendor\AppName-Version
-$FileName = Split-Path -Path $DownloadUrl -Leaf
-$VendorDir = Join-Path -Path $RootPath -ChildPath $VendorName
-$InstallerDir = Join-Path -Path $VendorDir -ChildPath "$ProductName-$Version"
-$InstallerPath = Join-Path -Path $InstallerDir -ChildPath $FileName
+$fileName = Split-Path -Path $downloadUrl -Leaf
+$vendorDir = Join-Path -Path $RootPath -ChildPath $vendorName
+$installerDir = Join-Path -Path $vendorDir -ChildPath "$productName-$version"
+$installerPath = Join-Path -Path $installerDir -ChildPath $fileName
 
 # Create folder Structure
 try {
-    Write-Host " * Create folder '$InstallerDir'"
-    $null = New-Item -Path $InstallerDir -ItemType Directory -Force
+    Write-Host " * Create folder '$installerDir'"
+    $null = New-Item -Path $installerDir -ItemType Directory -Force
 } catch {
-    Write-Host " * $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host " * $($_.Exception.Message)" @fail
     return 1
 }
 
 
-# Download installer. Reuse $Params with additional data
-$Params.Uri = $DownloadUrl
-$Params.OutFile = $InstallerPath
+# Download installer. Reuse $requestParams with additional data
+$requestParams.Uri = $downloadUrl
+$requestParams.OutFile = $installerPath
 try {
-    Write-Host " * Download '$FileName' to '$InstallerDir'"
-    $null = Invoke-WebRequest @Params
+    Write-Host " * Download '$fileName' to '$installerDir'"
+    $null = Invoke-WebRequest @requestParams
 } catch {
-    Write-Host " * $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host " * $($_.Exception.Message)" @fail
     return 1
 }
 
 
 # Extract installer from zip archive
 try {
-    Write-Host " * Expand '$FileName' to '$InstallerDir'"
-    Expand-Archive -Path $InstallerPath -DestinationPath $InstallerDir
+    Write-Host " * Expand '$fileName' to '$installerDir'"
+    Expand-Archive -Path $installerPath -DestinationPath $installerDir
+    Remove-Item $installerPath -Force
 } catch {
-    Write-Host " * $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host " * $($_.Exception.Message)" @fail
     return 1
 }
 
-try {
-    Remove-Item $InstallerPath
-}  catch {
-    Write-Host " * $($_.Exception.Message)" -ForegroundColor Red
-    return 1
-}
 
-$InstallerPath = (Get-ChildItem -Path $InstallerDir -Filter "$SearchPattern*msi"|
-    Select-Object -First 1).FullName
-$FileName = Split-Path -Path $InstallerPath -Leaf
+$installerPath = Get-ChildItem -Path $installerDir -Filter "$searchPattern*msi"|
+    Select-Object -First 1 -ExpandProperty FullName
+$fileName = Split-Path -Path $installerPath -Leaf
 
 # Create install script
-$Template = @'
+$scriptTemplate = @'
 #Requires -RunAsAdministrator
 [CmdletBinding()]
 param()
 
-$execute = "<EXE>"
-$withParams = "<PARAMS>"
 $exitCodes = <ExitCodes>
+$installParams = @{
+    'FilePath' = "<EXE>"
+    'ArgumentList' = "<PARAMS>"
+    'Wait' = $true
+    'PassThru' = $true
+}
 
 try { 
-    $exitCode = ( Start-Process -FilePath $execute -ArgumentList $withParams -Wait -PassThru ).ExitCode 
-} catch {  Write-Host $($_.Exception.Message) -ForegroundColor Red }
+    $exitCode = ( Start-Process @installParams).ExitCode 
+} catch {
+    Write-Host $($_.Exception.Message) -ForegroundColor Red
+    exit 1
+}
 
-if ($exitCode -notin $ExitCodes) { 
-     Write-Host "Unexpected exit code: $exitCode" -ForegroundColor Red }
-
-return $exitCode
+if ($exitCode -notin $exitCodes) { 
+     Write-Host "Unexpected exit code: $exitCode" -ForegroundColor Red
+} else {
+    Write-Host "Installation complete with exit code $exitCode"
+}
+exit $exitCode
 '@
 
-$Template = $Template.Replace('<EXE>', 'msiexec')
-$Template = $Template.Replace('<PARAMS>', $InstallParams)
-$Template = $Template.Replace('<FILE>', $FileName)
-$Template = $Template.Replace('<ExitCodes>', $ExitCodes)
-$ScriptPath = Join-Path -Path $InstallerDir -ChildPath "Install.ps1"
+$scriptTemplate = $scriptTemplate.Replace('<EXE>', 'msiexec')
+$scriptTemplate = $scriptTemplate.Replace('<PARAMS>', $installParams)
+$scriptTemplate = $scriptTemplate.Replace('<FILE>', $fileName)
+$scriptTemplate = $scriptTemplate.Replace('<ExitCodes>', $exitCodes)
+$ScriptPath = Join-Path -Path $installerDir -ChildPath "Install.ps1"
 try {
-    Write-Host " * Create 'install.ps1' in '$InstallerDir'"
-    $Template | Out-File -FilePath $ScriptPath -Encoding utf8
+    Write-Host " * Create 'install.ps1' in '$installerDir'"
+    $scriptTemplate | Out-File -FilePath $ScriptPath -Encoding utf8
     Write-Host "Done`n" -ForegroundColor Green
 } catch {
-    Write-Host " * $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host " * $($_.Exception.Message)" @fail
     return 1
 }
