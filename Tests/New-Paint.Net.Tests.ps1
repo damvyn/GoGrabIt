@@ -145,11 +145,12 @@ Describe 'New-Paint.Net.ps1' {
             New-Item -Path $TestDir -ItemType Directory -Force | Out-Null
 
             Mock Invoke-RestMethod { throw 'Unable to connect to the remote server' }
-            $script:Result = & $ScriptPath -Destination $TestDir
+            & $ScriptPath -Destination $TestDir
+            $script:exitCode = $LASTEXITCODE
         }
 
         It 'Return 1' {
-            $Result | Should -Be 1
+            $exitCode | Should -Be 1
         }
     }
 
@@ -160,11 +161,12 @@ Describe 'New-Paint.Net.ps1' {
 
             Mock Invoke-RestMethod { return $FakeReply }
             Mock New-Item { throw 'Access to the path is denied' }
-            $script:Result = & $ScriptPath -Destination $TestDir
+            & $ScriptPath -Destination $TestDir
+            $script:exitCode = $LASTEXITCODE
         }
 
         It 'Return 1' {
-            $Result | Should -Be 1
+            $exitCode | Should -Be 1
         }
     }
 
@@ -176,11 +178,12 @@ Describe 'New-Paint.Net.ps1' {
             Mock Invoke-RestMethod { return $FakeReply }
             Mock Invoke-WebRequest { throw 'The remote server returned an error: (404) Not Found.' }
 
-            $script:Result = & $ScriptPath -Destination $TestDir
+            & $ScriptPath -Destination $TestDir
+            $script:exitCode = $LASTEXITCODE
         }
 
         It 'Return 1' {
-            $Result | Should -Be 1
+            $exitCode | Should -Be 1
         }
     }
 
@@ -198,11 +201,12 @@ Describe 'New-Paint.Net.ps1' {
             } -ParameterFilter { $OutFile }
             Mock Expand-Archive { throw 'The archive is invalid or corrupted.' }
 
-            $script:Result = & $ScriptPath -Destination $TestDir
+            & $ScriptPath -Destination $TestDir
+            $script:exitCode = $LASTEXITCODE
         }
 
         It 'Return 1' {
-            $Result | Should -Be 1
+            $exitCode | Should -Be 1
         }
     }
 
@@ -225,11 +229,12 @@ Describe 'New-Paint.Net.ps1' {
             }
             Mock Out-File { throw 'Access to the path is denied' }
 
-            $script:Result = & $ScriptPath -Destination $TestDir
+            & $ScriptPath -Destination $TestDir
+            $script:exitCode = $LASTEXITCODE
         }
 
         It 'Return 1' {
-            $Result | Should -Be 1
+            $exitCode | Should -Be 1
         }
     }
 }
