@@ -34,7 +34,7 @@ try {
 # get productVersion
 $version = $response.tag_name -replace '[A-Za-z]', ''
 if ($version -match "\d+(\.\d+)+") {
-    Write-Host " * Found product version $productVersion"
+    Write-Host " * Found product version $version"
 } else {
     Write-Host " * Cannot detect product version." @fail
     exit 1
