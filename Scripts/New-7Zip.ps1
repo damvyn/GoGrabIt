@@ -28,7 +28,7 @@ try {
     $response = Invoke-RestMethod @requestParams
 } catch {
     Write-Host " * $($_.Exception.Message)" @fail
-    return 1
+    exit 1
 }
 
 # get productVersion
@@ -46,10 +46,8 @@ $downloadUrl = $response.assets |
     Select-Object -First 1 -ExpandProperty browser_download_url
 if ([string]::IsNullOrEmpty($downloadUrl)) {
     Write-Host " * Download link was not detected" @fail
-    return 1
-} else {
-    Write-Host " * Found download link $downloadUrl"
-}
+    exit 1
+} else { Write-Host " * Found download link $downloadUrl" }
 
 # Define variables to build path like Root\Vendor\AppName-Version
 $fileName = Split-Path -Path $downloadUrl -Leaf
@@ -63,7 +61,7 @@ try {
     $null = New-Item -Path $installerDir -ItemType Directory -Force
 } catch {
     Write-Host " * $($_.Exception.Message)" @fail
-    return 1
+    exit 1
 }
 
 # Download installer. Reuse $requestParams with additional data
@@ -74,7 +72,7 @@ try {
     $null = Invoke-WebRequest @requestParams
 } catch {
     Write-Host " * $($_.Exception.Message)" @fail
-    return 1
+    exit 1
 }
 
 
@@ -118,5 +116,5 @@ try {
     Write-Host "Done`n" -ForegroundColor Green
 } catch {
     Write-Host " * $($_.Exception.Message)" @fail
-    return 1
+    exit 1
 }
