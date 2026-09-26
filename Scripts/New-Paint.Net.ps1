@@ -2,14 +2,14 @@
 param( [string]$Destination )
 
 # Check destination
-$rootPath = if ([string]::IsNullOrEmpty($Destination)) { $Destination }
-else { $PsScriptRoot }
+$rootPath = if ([string]::IsNullOrEmpty($Destination)) { $PSScriptRoot }
+else { $Destination }
 
 # Product information
 $productName = 'PaintDotNet'
 $vendorName = 'dotPND'
 $productUrl = 'https://api.github.com/repos/paintdotnet/release/releases/latest'
-$searchPattern = '*winmsi*x64*zip'
+$searchPattern = '*winmsi*x64'
 $installParams = '/i `"$PSScriptRoot\<FILE>`" ALLUSERS=1 REBOOT=ReallySuppress /qb'
 $exitCodes = "0, 3010"
 
@@ -42,9 +42,8 @@ if ($version -match "\d+(\.\d+)+") {
 
 # get downloadUrl
 $downloadUrl = $response.assets |
-    Where-Object{ $_.name -like $searchPattern } |
+    Where-Object{ $_.name -like "$searchPattern*zip" } |
     Select-Object -First 1 -ExpandProperty browser_download_url
-$downloadUrl = @($downloadUrl | Where-Object { $_ })
 if ([string]::IsNullOrEmpty($downloadUrl)) {
     Write-Host " * Download link was not detected" @fail
     return 1

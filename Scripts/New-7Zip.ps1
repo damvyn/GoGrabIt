@@ -2,8 +2,8 @@
 param( [string]$Destination )
 
 # Check destination
-$rootPath = if ([string]::IsNullOrEmpty($Destination)) { $Destination }
-else { $PsScriptRoot }
+$rootPath = if ([string]::IsNullOrEmpty($Destination)) { $PSScriptRoot }
+else { $Destination }
 
 # Product information
 $productName = '7-Zip'
