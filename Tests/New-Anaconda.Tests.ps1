@@ -67,6 +67,13 @@ Describe 'New-Anaconda.ps1' {
             $content | Should -Match ([regex]::Escape('/D=C:\ProgramData\Anaconda3'))
             $content | Should -Match ([regex]::Escape('$exitCodes = 0, 3010'))
         }
+
+        It 'Install.ps1 has product name and version' {
+            $installScript = Join-Path $TestDir 'Anaconda\Anaconda3-2024.10-1\Install.ps1'
+            $content = Get-Content -Path $installScript -Raw
+            $content | Should -Match ([regex]::Escape('Install Anaconda3 2024.10-1...'))
+            $content | Should -Not -Match '<APPNAME>|<VERSION>|<EXE>|<PARAMS>|<FILE>|<ExitCodes>'
+        }
     }
 
     Context 'Call without -Destination' {

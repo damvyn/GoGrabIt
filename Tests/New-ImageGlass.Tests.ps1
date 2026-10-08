@@ -75,6 +75,13 @@ Describe 'New-ImageGlass.ps1' {
             $content | Should -Match 'REBOOT=ReallySuppress'
             $content | Should -Match '/qb'
         }
+
+        It 'Install.ps1 has product name and version' {
+            $installScript = Join-Path $TestDir 'DuingDieuPhap\ImageGlass-8.5.0\Install.ps1'
+            $content = Get-Content -Path $installScript -Raw
+            $content | Should -Match ([regex]::Escape('Install ImageGlass 8.5.0...'))
+            $content | Should -Not -Match '<APPNAME>|<VERSION>|<EXE>|<PARAMS>|<FILE>|<ExitCodes>'
+        }
     }
 
     Context 'Call without -Destination' {

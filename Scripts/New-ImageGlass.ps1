@@ -1,5 +1,5 @@
-﻿[CmdletBinding()]
-param( [string]$Destination )
+[CmdletBinding()]
+param( [string]$Destination, [switch]$Install )
 
 # Check destination
 $rootPath = if ([string]::IsNullOrEmpty($Destination)) { $PSScriptRoot }
@@ -92,16 +92,18 @@ $installParams = @{
 }
 
 try {
-    $exitCode = ( Start-Process @installParams ).ExitCode
+    Write-Host " * Install <APPNAME> <VERSION>..." -NoNewLine
+    $exitCode = ( Start-Process @installParams).ExitCode
 } catch {
+    Write-Host "[FAIL]" -ForegroundColor 'Red'
     Write-Host $($_.Exception.Message) -ForegroundColor Red
     exit 1
 }
 
 if ($exitCode -notin $exitCodes) {
-     Write-Host "Unexpected exit code: $exitCode" -ForegroundColor Red
+    Write-Host "[FAIL] Error Code: $exitCode" -ForegroundColor Red
 } else {
-    Write-Host "Installation complete with exit code $exitCode"
+    Write-Host "[OK]" -ForegroundColor 'Green'
 }
 exit $exitCode
 '@
@@ -110,12 +112,19 @@ $scriptTemplate = $scriptTemplate.Replace('<EXE>', 'msiexec')
 $scriptTemplate = $scriptTemplate.Replace('<PARAMS>', $installParams)
 $scriptTemplate = $scriptTemplate.Replace('<FILE>', $fileName)
 $scriptTemplate = $scriptTemplate.Replace('<ExitCodes>', $exitCodes)
+$scriptTemplate = $scriptTemplate.Replace('<APPNAME>', $productName)
+$scriptTemplate = $scriptTemplate.Replace('<VERSION>', $version)
 $scriptPath = Join-Path -Path $installerDir -ChildPath "Install.ps1"
 try {
     Write-Host " * Create 'install.ps1' in '$installerDir'"
     $scriptTemplate | Out-File -FilePath $scriptPath -Encoding utf8
-    Write-Host "Done`n" -ForegroundColor Green
 } catch {
     Write-Host " * $($_.Exception.Message)" -ForegroundColor Red
     exit 1
 }
+
+# ------------------------------------------------------------------------------
+# install product
+if ( $Install ) { & $scriptPath }
+Write-Host "Done`n" -ForegroundColor Green
+# ------------------------------------------------------------------------------

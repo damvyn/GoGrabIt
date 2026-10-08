@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param( [string]$Destination )
+param( [string]$Destination, [switch]$Install )
 
 # Check destination
 $rootPath = if ([string]::IsNullOrEmpty($Destination)) { $PSScriptRoot }
@@ -11,7 +11,7 @@ $productName = 'Anaconda3'
 $vendorName = 'Anaconda'
 $productUrl = 'https://repo.anaconda.com/archive'
 $searchPattern = 'Anaconda3-.*-Windows-x86_64.exe'
-$installParams = '/InstallationType=AllUsers /AddToPath=1 /RegisterPython=1 /S /D=C:\ProgramData\Anaconda3'
+$installParams = '/InstallationType=AllUsers /RegisterPython=1 /S /D=C:\ProgramData\Anaconda3'
 $exitCodes = "0, 3010"
 # ==============================================================================
 
@@ -102,16 +102,18 @@ $installParams = @{
 }
 
 try {
+    Write-Host " * Install <APPNAME> <VERSION>..."
     $exitCode = ( Start-Process @installParams).ExitCode
 } catch {
+    Write-Host "[FAIL]" -ForegroundColor 'Red'
     Write-Host $($_.Exception.Message) -ForegroundColor Red
     exit 1
 }
 
 if ($exitCode -notin $exitCodes) {
-     Write-Host "Unexpected exit code: $exitCode" -ForegroundColor Red
+    Write-Host "[FAIL] Error Code: $exitCode" -ForegroundColor Red
 } else {
-    Write-Host "Installation complete with exit code $exitCode"
+    Write-Host "[OK]" -ForegroundColor 'Green'
 }
 exit $exitCode
 '@
@@ -121,12 +123,19 @@ $scriptTemplate = $scriptTemplate.Replace('<EXE>', $fileName)
 $scriptTemplate = $scriptTemplate.Replace('<PARAMS>', $installParams)
 $scriptTemplate = $scriptTemplate.Replace('<FILE>', $fileName)
 $scriptTemplate = $scriptTemplate.Replace('<ExitCodes>', $exitCodes)
+$scriptTemplate = $scriptTemplate.Replace('<APPNAME>', $productName)
+$scriptTemplate = $scriptTemplate.Replace('<VERSION>', $version)
 $scriptPath = Join-Path -Path $installerDir -ChildPath "Install.ps1"
 try {
     Write-Host " * Create 'install.ps1' in '$installerDir'"
     $scriptTemplate | Out-File -FilePath $ScriptPath -Encoding utf8
-    Write-Host "Done`n" -ForegroundColor Green
 } catch {
     Write-Host " * $($_.Exception.Message)" @fail
     exit 1
 }
+
+# ------------------------------------------------------------------------------
+# install product
+if ( $Install ) { & $scriptPath }
+Write-Host "Done`n" -ForegroundColor Green
+# ------------------------------------------------------------------------------

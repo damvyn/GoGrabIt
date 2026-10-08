@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param( [string]$Destination )
+param( [string]$Destination, [switch]$Install )
 
 # ------------------------------------------------------------------------------
 # Product information
@@ -102,6 +102,8 @@ $InstallTemplate = $InstallTemplate.Replace('<EXE>', 'msiexec')
 $InstallTemplate = $InstallTemplate.Replace('<PARAMS>', $installParams)
 $InstallTemplate = $InstallTemplate.Replace('<FILE>', $fileName)
 $InstallTemplate = $InstallTemplate.Replace('<ExitCodes>', $exitCodes)
+$InstallTemplate = $InstallTemplate.Replace('<APPNAME>', $productName)
+$InstallTemplate = $InstallTemplate.Replace('<VERSION>', $version)
 $scriptPath = Join-Path -Path $installerDir -ChildPath "Install.ps1"
 try {
     Write-Host " * Create 'install.ps1' in '$installerDir'"
@@ -111,4 +113,9 @@ try {
     Write-Host " * $($_.Exception.Message)" -ForegroundColor Red
     exit 1
 }
+# ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+# install product
+if ( $Install ) { & $scriptPath }
 # ------------------------------------------------------------------------------

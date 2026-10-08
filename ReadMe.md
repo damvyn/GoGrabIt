@@ -38,6 +38,12 @@ In this case the script creates foder **Software** if it is not present and puts
            ├── 📄 Setup.exe
            └── 📄 Install.ps1     
 ```
+ * Use the **-Install** switch to install the product right after it is downloaded. The generated **Install.ps1** is run immediately, so start PowerShell as administrator:
+```powershell
+.\New-7Zip.ps1 -Install
+```
+It can be combined with **-Destination**. The installation prints its result as `[OK]` or `[FAIL] Error Code: <code>`.
+
 > [!NOTE]
 > Make sure the execution policy is RemoteSign or less strict
 > You may need to unblock New-Something.ps1 in Properties.

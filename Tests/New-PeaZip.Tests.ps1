@@ -76,6 +76,13 @@ Describe 'New-PeaZip.ps1' {
             $content | Should -Match '/SUPPRESSMSGBOXES'
             $content | Should -Match '/SP-'
         }
+
+        It 'Install.ps1 has product name and version' {
+            $installScript = Join-Path $TestDir 'Giorgio Tani\PeaZip-10.4.0\Install.ps1'
+            $content = Get-Content -Path $installScript -Raw
+            $content | Should -Match ([regex]::Escape('Install PeaZip 10.4.0...'))
+            $content | Should -Not -Match '<APPNAME>|<VERSION>|<EXE>|<PARAMS>|<FILE>|<ExitCodes>'
+        }
     }
 
     Context 'Call without -Destination' {

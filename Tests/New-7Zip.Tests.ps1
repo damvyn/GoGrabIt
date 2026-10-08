@@ -75,6 +75,13 @@ Describe 'New-7Zip.ps1' {
             $content | Should -Match 'REBOOT=ReallySuppress'
             $content | Should -Match '/qb'
         }
+
+        It 'Install.ps1 has product name and version' {
+            $installScript = Join-Path $TestDir 'Igor Pavlov\7-Zip-21.07\Install.ps1'
+            $content = Get-Content -Path $installScript -Raw
+            $content | Should -Match ([regex]::Escape('Install 7-Zip 21.07...'))
+            $content | Should -Not -Match '<APPNAME>|<VERSION>|<EXE>|<PARAMS>|<FILE>|<ExitCodes>'
+        }
     }
 
     Context 'Call without -Destination' {

@@ -76,6 +76,13 @@ Describe 'New-PowerShell.ps1' {
             $content | Should -Match '/qb'
             $content | Should -Match ([regex]::Escape('0, 3010'))
         }
+
+        It 'Install.ps1 has product name and version' {
+            $installScript = Join-Path $TestDir 'Microsoft\PowerShell-7.4.6\Install.ps1'
+            $content = Get-Content -Path $installScript -Raw
+            $content | Should -Match ([regex]::Escape('Install PowerShell 7.4.6...'))
+            $content | Should -Not -Match '<APPNAME>|<VERSION>|<EXE>|<PARAMS>|<FILE>|<ExitCodes>'
+        }
     }
 
     Context 'Call without -Destination' {

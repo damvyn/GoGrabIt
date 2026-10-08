@@ -11,15 +11,17 @@ $installParams = @{
 }
 
 try {
+    Write-Host " * Install <APPNAME> <VERSION>..." -NoNewLine
     $exitCode = ( Start-Process @installParams).ExitCode
 } catch {
+    Write-Host "[FAIL]" -ForegroundColor 'Red'
     Write-Host $($_.Exception.Message) -ForegroundColor Red
     exit 1
 }
 
 if ($exitCode -notin $exitCodes) {
-     Write-Host "Unexpected exit code: $exitCode" -ForegroundColor Red
+    Write-Host "[FAIL] Error Code: $exitCode" -ForegroundColor Red
 } else {
-    Write-Host "Installation complete with exit code $exitCode"
+    Write-Host "[OK]" -ForegroundColor 'Green'
 }
 exit $exitCode
