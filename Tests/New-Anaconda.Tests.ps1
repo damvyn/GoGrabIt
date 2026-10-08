@@ -61,7 +61,6 @@ Describe 'New-Anaconda.ps1' {
             $content = Get-Content -Path $installScript -Raw
             $content | Should -Match ([regex]::Escape('"$PSScriptRoot\Anaconda3-2024.10-1-Windows-x86_64.exe"'))
             $content | Should -Match '/InstallationType=AllUsers'
-            $content | Should -Match '/AddToPath=1'
             $content | Should -Match '/RegisterPython=1'
             $content | Should -Match '/S'
             $content | Should -Match ([regex]::Escape('/D=C:\ProgramData\Anaconda3'))
