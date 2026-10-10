@@ -101,15 +101,22 @@ param()
 
 $exitCodes = <ExitCodes>
 $installParams = @{
-    'FilePath' = "<EXE>"
+    'FilePath' = "$PSScriptRoot\<EXE>"
     'ArgumentList' = "<PARAMS>"
-    'Wait' = $true
+    'Wait' = $false
     'PassThru' = $true
 }
 
 try {
-    Write-Host " * Install <APPNAME> <VERSION>..." -NoNewLine
-    $exitCode = ( Start-Process @installParams).ExitCode
+    Write-Host " * Install <APPNAME> <VERSION>..."
+    $process = Start-Process @installParams
+    $null = $process.Handle    # caches the handle so ExitCode is reliably available
+    # wait for 5 minutes
+    if (-not $process.WaitForExit(300000)) {
+        $process.Kill()
+        throw "Process was killed after 5 minutes of waiting"
+    }
+    $exitCode = $process.ExitCode
 } catch {
     Write-Host "[FAIL]" -ForegroundColor 'Red'
     Write-Host $($_.Exception.Message) -ForegroundColor Red
@@ -124,7 +131,7 @@ if ($exitCode -notin $exitCodes) {
 exit $exitCode
 '@
 
-$InstallTemplate = $InstallTemplate.Replace('<EXE>', '$PSScriptRoot\<FILE>')
+$InstallTemplate = $InstallTemplate.Replace('<EXE>', '<FILE>')
 $InstallTemplate = $InstallTemplate.Replace('<PARAMS>', $installParams)
 $InstallTemplate = $InstallTemplate.Replace('<FILE>', $fileName)
 $InstallTemplate = $InstallTemplate.Replace('<ExitCodes>', $exitCodes)
