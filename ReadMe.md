@@ -67,7 +67,6 @@ It can be combined with **-Destination**. The installation prints its result as 
 | Firefox ESR | [New-FirefoxESR.ps1](Scripts/New-FirefoxESR.ps1) | [New-FirefoxESR.Tests.ps1](Tests/New-FirefoxESR.Tests.ps1) |
 | Flameshot | [New-Flameshot.ps1](Scripts/New-Flameshot.ps1) | [New-Flameshot.Tests.ps1](Tests/New-Flameshot.Tests.ps1) |
 | FreeCad | [New-FreeCad.ps1](Scripts/New-FreeCad.ps1) | [New-FreeCad.Tests.ps1](Tests/New-FreeCad.Tests.ps1) |
-| GhostScript | [New-GhostScript.ps1](Scripts/New-GhostScript.ps1) | [New-GhostScript.Tests.ps1](Tests/New-GhostScript.Tests.ps1) |
 | Git | [New-Git.ps1](Scripts/New-Git.ps1) | [New-Git.Tests.ps1](Tests/New-Git.Tests.ps1) |
 | Graphviz | [New-Graphviz.ps1](Scripts/New-Graphviz.ps1) | [New-Graphviz.Tests.ps1](Tests/New-Graphviz.Tests.ps1) |
 | Greenshot | [New-Greenshot.ps1](Scripts/New-Greenshot.ps1) | [New-Greenshot.Tests.ps1](Tests/New-Greenshot.Tests.ps1) |
@@ -75,7 +74,6 @@ It can be combined with **-Destination**. The installation prints its result as 
 | HeidiSQL | [New-HeidiSQL.ps1](Scripts/New-HeidiSQL.ps1) | [New-HeidiSQL.Tests.ps1](Tests/New-HeidiSQL.Tests.ps1) |
 | ImageGlass | [New-ImageGlass.ps1](Scripts/New-ImageGlass.ps1) | [New-ImageGlass.Tests.ps1](Tests/New-ImageGlass.Tests.ps1) |
 | LibreCAD | [New-LibreCad.ps1](Scripts/New-LibreCad.ps1) | [New-LibreCad.Tests.ps1](Tests/New-LibreCad.Tests.ps1) |
-| Nmap | [New-Nmap.ps1](Scripts/New-Nmap.ps1) | [New-Nmap.Tests.ps1](Tests/New-Nmap.Tests.ps1) |
 | Node.js | [New-NodeJs.ps1](Scripts/New-NodeJs.ps1) | [New-NodeJs.Tests.ps1](Tests/New-NodeJs.Tests.ps1) |
 | Notepad++ | [New-Notepad++.ps1](Scripts/New-Notepad%2B%2B.ps1) | [New-Notepad++.Tests.ps1](Tests/New-Notepad%2B%2B.Tests.ps1) |
 | PaintDotNet | [New-Paint.Net.ps1](Scripts/New-Paint.Net.ps1) | [New-Paint.Net.Tests.ps1](Tests/New-Paint.Net.Tests.ps1) |
