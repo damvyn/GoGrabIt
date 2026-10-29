@@ -40,7 +40,12 @@ try {
 
 # ------------------------------------------------------------------------------
 # get product version and validate
-$version = $response[0].version -replace '^v', ''
+# index.json is sorted from newest to oldest. Skip pre-releases (alpha, beta, rc, nightly)
+# and releases without a Windows x64 msi
+$release = $response |
+    Where-Object { $_.version -match '^v\d+(\.\d+)+$' -and $_.files -contains 'win-x64-msi' } |
+    Select-Object -First 1
+$version = $release.version -replace '^v', ''
 if ($version -match "\d+(\.\d+)+") {
     Write-Host " * Found product version $version"
 } else {
@@ -131,7 +136,6 @@ $scriptPath = Join-Path -Path $installerDir -ChildPath "Install.ps1"
 try {
     Write-Host " * Create 'install.ps1' in '$installerDir'"
     $InstallTemplate | Out-File -FilePath $scriptPath -Encoding utf8
-    Write-Host "Done`n" -ForegroundColor Green
 } catch {
     Write-Host " * $($_.Exception.Message)" -ForegroundColor Red
     exit 1
@@ -141,4 +145,5 @@ try {
 # ------------------------------------------------------------------------------
 # install product
 if ( $Install ) { & $scriptPath }
+Write-Host "Done`n" -ForegroundColor Green
 # ------------------------------------------------------------------------------

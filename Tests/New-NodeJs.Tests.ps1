@@ -6,7 +6,13 @@ Describe 'New-NodeJs.ps1' {
         $script:ScriptDir = Join-Path -Path $RootPath -ChildPath "Scripts"
         $script:ScriptPath = Join-Path -Path $ScriptDir -ChildPath "New-NodeJs.ps1"
 
-        $script:FakeReply = @([pscustomobject]@{ version = 'v22.11.0' }, [pscustomobject]@{ version = 'v22.10.0' })
+        $script:FakeReply = @(
+            [pscustomobject]@{ version = 'v23.0.0-alpha.0.0.0'; files = @('win-x64-msi') },
+            [pscustomobject]@{ version = 'v22.12.0-rc.1'; files = @('win-x64-msi') },
+            [pscustomobject]@{ version = 'v22.11.1'; files = @('win-x64-zip') },
+            [pscustomobject]@{ version = 'v22.11.0'; files = @('win-x64-msi') },
+            [pscustomobject]@{ version = 'v22.10.0'; files = @('win-x64-msi') }
+        )
     }
 
     Context 'Happy Path' {
@@ -108,7 +114,7 @@ Describe 'New-NodeJs.ps1' {
             $script:TestDir = Join-Path $TestDrive $((new-guid).guid)
             New-Item -Path $TestDir -ItemType Directory -Force | Out-Null
 
-            Mock Invoke-RestMethod { return @([pscustomobject]@{ version = 'unknown' }) }
+            Mock Invoke-RestMethod { return @([pscustomobject]@{ version = 'unknown'; files = @('win-x64-msi') }) }
             & $ScriptPath -Destination $TestDir
             $script:exitCode = $LASTEXITCODE
         }
