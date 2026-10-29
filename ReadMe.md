@@ -53,31 +53,45 @@ It can be combined with **-Destination**. The installation prints its result as 
 | App Name | Script | Test |
 |----------|--------|------|
 | 7-Zip | [New-7Zip.ps1](Scripts/New-7Zip.ps1) | [New-7Zip.Tests.ps1](Tests/New-7Zip.Tests.ps1) |
+| Adobe Reader | [New-AdobeReader.ps1](Scripts/New-AdobeReader.ps1) | [New-AdobeReader.Tests.ps1](Tests/New-AdobeReader.Tests.ps1) |
 | Anaconda3 | [New-Anaconda.ps1](Scripts/New-Anaconda.ps1) | [New-Anaconda.Tests.ps1](Tests/New-Anaconda.Tests.ps1) |
 | Arduino IDE | [New-ArduinoIDE.ps1](Scripts/New-ArduinoIDE.ps1) | [New-ArduinoIDE.Tests.ps1](Tests/New-ArduinoIDE.Tests.ps1) |
 | Arelle | [New-Arelle.ps1](Scripts/New-Arelle.ps1) | [New-Arelle.Tests.ps1](Tests/New-Arelle.Tests.ps1) |
 | AutoHotkey | [New-AutoHotkey.ps1](Scripts/New-AutoHotkey.ps1) | [New-AutoHotkey.Tests.ps1](Tests/New-AutoHotkey.Tests.ps1) |
+| AWS CLI | [New-AwsCli.ps1](Scripts/New-AwsCli.ps1) | [New-AwsCli.Tests.ps1](Tests/New-AwsCli.Tests.ps1) |
 | Azure CLI | [New-AzureCLI.ps1](Scripts/New-AzureCLI.ps1) | [New-AzureCLI.Tests.ps1](Tests/New-AzureCLI.Tests.ps1) |
 | Azure Storage Explorer | [New-AzureStorageExplorer.ps1](Scripts/New-AzureStorageExplorer.ps1) | [New-AzureStorageExplorer.Tests.ps1](Tests/New-AzureStorageExplorer.Tests.ps1) |
 | Chrome | [New-Chrome.ps1](Scripts/New-Chrome.ps1) | [New-Chrome.Tests.ps1](Tests/New-Chrome.Tests.ps1) |
+| Citrix Workspace | [New-CitrixWorkspace.ps1](Scripts/New-CitrixWorkspace.ps1) | [New-CitrixWorkspace.Tests.ps1](Tests/New-CitrixWorkspace.Tests.ps1) |
+| CompressO | [New-CompressO.ps1](Scripts/New-CompressO.ps1) | [New-CompressO.Tests.ps1](Tests/New-CompressO.Tests.ps1) |
+| Cyberduck | [New-Cyberduck.ps1](Scripts/New-Cyberduck.ps1) | [New-Cyberduck.Tests.ps1](Tests/New-Cyberduck.Tests.ps1) |
 | DBeaver Community | [New-DBeaver.ps1](Scripts/New-DBeaver.ps1) | [New-DBeaver.Tests.ps1](Tests/New-DBeaver.Tests.ps1) |
+| Docker Desktop | [New-DockerDesktop.ps1](Scripts/New-DockerDesktop.ps1) | [New-DockerDesktop.Tests.ps1](Tests/New-DockerDesktop.Tests.ps1) |
+| Dropbox | [New-Dropbox.ps1](Scripts/New-Dropbox.ps1) | [New-Dropbox.Tests.ps1](Tests/New-Dropbox.Tests.ps1) |
 | Everything | [New-Everything.ps1](Scripts/New-Everything.ps1) | [New-Everything.Tests.ps1](Tests/New-Everything.Tests.ps1) |
 | FileZilla Ftp Client | [New-FileZilla.ps1](Scripts/New-FileZilla.ps1) | [New-FileZilla.Tests.ps1](Tests/New-FileZilla.Tests.ps1) |
 | Firefox | [New-Firefox.ps1](Scripts/New-Firefox.ps1) | [New-Firefox.Tests.ps1](Tests/New-Firefox.Tests.ps1) |
 | Firefox ESR | [New-FirefoxESR.ps1](Scripts/New-FirefoxESR.ps1) | [New-FirefoxESR.Tests.ps1](Tests/New-FirefoxESR.Tests.ps1) |
+| Firefox ESR 115 | [New-FirefoxESR115.ps1](Scripts/New-FirefoxESR115.ps1) | [New-FirefoxESR115.Tests.ps1](Tests/New-FirefoxESR115.Tests.ps1) |
 | Flameshot | [New-Flameshot.ps1](Scripts/New-Flameshot.ps1) | [New-Flameshot.Tests.ps1](Tests/New-Flameshot.Tests.ps1) |
 | FreeCad | [New-FreeCad.ps1](Scripts/New-FreeCad.ps1) | [New-FreeCad.Tests.ps1](Tests/New-FreeCad.Tests.ps1) |
-| GhostScript | [New-GhostScript.ps1](Scripts/New-GhostScript.ps1) | [New-GhostScript.Tests.ps1](Tests/New-GhostScript.Tests.ps1) |
+| GIMP | [New-GIMP.ps1](Scripts/New-GIMP.ps1) | [New-GIMP.Tests.ps1](Tests/New-GIMP.Tests.ps1) |
 | Git | [New-Git.ps1](Scripts/New-Git.ps1) | [New-Git.Tests.ps1](Tests/New-Git.Tests.ps1) |
 | Graphviz | [New-Graphviz.ps1](Scripts/New-Graphviz.ps1) | [New-Graphviz.Tests.ps1](Tests/New-Graphviz.Tests.ps1) |
 | Greenshot | [New-Greenshot.ps1](Scripts/New-Greenshot.ps1) | [New-Greenshot.Tests.ps1](Tests/New-Greenshot.Tests.ps1) |
 | Handbrake | [New-Handbrake.ps1](Scripts/New-Handbrake.ps1) | [New-Handbrake.Tests.ps1](Tests/New-Handbrake.Tests.ps1) |
 | HeidiSQL | [New-HeidiSQL.ps1](Scripts/New-HeidiSQL.ps1) | [New-HeidiSQL.Tests.ps1](Tests/New-HeidiSQL.Tests.ps1) |
 | ImageGlass | [New-ImageGlass.ps1](Scripts/New-ImageGlass.ps1) | [New-ImageGlass.Tests.ps1](Tests/New-ImageGlass.Tests.ps1) |
+| Kudu | [New-Kudu.ps1](Scripts/New-Kudu.ps1) | [New-Kudu.Tests.ps1](Tests/New-Kudu.Tests.ps1) |
 | LibreCAD | [New-LibreCad.ps1](Scripts/New-LibreCad.ps1) | [New-LibreCad.Tests.ps1](Tests/New-LibreCad.Tests.ps1) |
-| Nmap | [New-Nmap.ps1](Scripts/New-Nmap.ps1) | [New-Nmap.Tests.ps1](Tests/New-Nmap.Tests.ps1) |
+| LibreOffice | [New-LibreOffice.ps1](Scripts/New-LibreOffice.ps1) | [New-LibreOffice.Tests.ps1](Tests/New-LibreOffice.Tests.ps1) |
+| Microsoft Edge | [New-MicrosoftEdge.ps1](Scripts/New-MicrosoftEdge.ps1) | [New-MicrosoftEdge.Tests.ps1](Tests/New-MicrosoftEdge.Tests.ps1) |
+| MySQL Connector/ODBC | [New-MySQLConnectorODBC.ps1](Scripts/New-MySQLConnectorODBC.ps1) | [New-MySQLConnectorODBC.Tests.ps1](Tests/New-MySQLConnectorODBC.Tests.ps1) |
+| NanaZip | [New-NanaZip.ps1](Scripts/New-NanaZip.ps1) | [New-NanaZip.Tests.ps1](Tests/New-NanaZip.Tests.ps1) |
 | Node.js | [New-NodeJs.ps1](Scripts/New-NodeJs.ps1) | [New-NodeJs.Tests.ps1](Tests/New-NodeJs.Tests.ps1) |
 | Notepad++ | [New-Notepad++.ps1](Scripts/New-Notepad%2B%2B.ps1) | [New-Notepad++.Tests.ps1](Tests/New-Notepad%2B%2B.Tests.ps1) |
+| OneDrive | [New-OneDrive.ps1](Scripts/New-OneDrive.ps1) | [New-OneDrive.Tests.ps1](Tests/New-OneDrive.Tests.ps1) |
+| Orange | [New-Orange.ps1](Scripts/New-Orange.ps1) | [New-Orange.Tests.ps1](Tests/New-Orange.Tests.ps1) |
 | PaintDotNet | [New-Paint.Net.ps1](Scripts/New-Paint.Net.ps1) | [New-Paint.Net.Tests.ps1](Tests/New-Paint.Net.Tests.ps1) |
 | Path Copy Copy | [New-PathCopyCopy.ps1](Scripts/New-PathCopyCopy.ps1) | [New-PathCopyCopy.Tests.ps1](Tests/New-PathCopyCopy.Tests.ps1) |
 | PDFsamBasic | [New-PDFsamBasic.ps1](Scripts/New-PDFsamBasic.ps1) | [New-PDFsamBasic.Tests.ps1](Tests/New-PDFsamBasic.Tests.ps1) |
@@ -88,6 +102,7 @@ It can be combined with **-Destination**. The installation prints its result as 
 | PyCharm | [New-PyCharm.ps1](Scripts/New-PyCharm.ps1) | [New-PyCharm.Tests.ps1](Tests/New-PyCharm.Tests.ps1) |
 | Python | [New-Python.ps1](Scripts/New-Python.ps1) | [New-Python.Tests.ps1](Tests/New-Python.Tests.ps1) |
 | QGIS | [New-QGIS.ps1](Scripts/New-QGIS.ps1) | [New-QGIS.Tests.ps1](Tests/New-QGIS.Tests.ps1) |
+| R for Windows | [New-RForWindows.ps1](Scripts/New-RForWindows.ps1) | [New-RForWindows.Tests.ps1](Tests/New-RForWindows.Tests.ps1) |
 | ResInsight | [New-ResInsight.ps1](Scripts/New-ResInsight.ps1) | [New-ResInsight.Tests.ps1](Tests/New-ResInsight.Tests.ps1) |
 | RStudio Desktop | [New-RStudio.ps1](Scripts/New-RStudio.ps1) | [New-RStudio.Tests.ps1](Tests/New-RStudio.Tests.ps1) |
 | ShareX | [New-ShareX.ps1](Scripts/New-ShareX.ps1) | [New-ShareX.Tests.ps1](Tests/New-ShareX.Tests.ps1) |
@@ -98,16 +113,21 @@ It can be combined with **-Destination**. The installation prints its result as 
 | Thunderbird | [New-Thunderbird.ps1](Scripts/New-Thunderbird.ps1) | [New-Thunderbird.Tests.ps1](Tests/New-Thunderbird.Tests.ps1) |
 | Thunderbird ESR | [New-ThunderbirdESR.ps1](Scripts/New-ThunderbirdESR.ps1) | [New-ThunderbirdESR.Tests.ps1](Tests/New-ThunderbirdESR.Tests.ps1) |
 | TortoiseGit | [New-TortoiseGit.ps1](Scripts/New-TortoiseGit.ps1) | [New-TortoiseGit.Tests.ps1](Tests/New-TortoiseGit.Tests.ps1) |
+| TortoiseSVN | [New-TortoiseSVN.ps1](Scripts/New-TortoiseSVN.ps1) | [New-TortoiseSVN.Tests.ps1](Tests/New-TortoiseSVN.Tests.ps1) |
 | Total Commander | [New-TotalCommander.ps1](Scripts/New-TotalCommander.ps1) | [New-TotalCommander.Tests.ps1](Tests/New-TotalCommander.Tests.ps1) |
 | uv | [New-AstralUv.ps1](Scripts/New-AstralUv.ps1) | [New-AstralUv.Tests.ps1](Tests/New-AstralUv.Tests.ps1) |
 | Vim | [New-Vim.ps1](Scripts/New-Vim.ps1) | [New-Vim.Tests.ps1](Tests/New-Vim.Tests.ps1) |
 | Visual Studio Code | [New-VsCode.ps1](Scripts/New-VsCode.ps1) | [New-VsCode.Tests.ps1](Tests/New-VsCode.Tests.ps1) |
 | VLC Media Player | [New-VLC.ps1](Scripts/New-VLC.ps1) | [New-VLC.Tests.ps1](Tests/New-VLC.Tests.ps1) |
+| WellCAD | [New-WellCad.ps1](Scripts/New-WellCad.ps1) | [New-WellCad.Tests.ps1](Tests/New-WellCad.Tests.ps1) |
+| Windows Desktop Runtime | [New-WindowsDesktopRuntime.ps1](Scripts/New-WindowsDesktopRuntime.ps1) | [New-WindowsDesktopRuntime.Tests.ps1](Tests/New-WindowsDesktopRuntime.Tests.ps1) |
+| Windows Terminal | [New-WindowsTerminal.ps1](Scripts/New-WindowsTerminal.ps1) | [New-WindowsTerminal.Tests.ps1](Tests/New-WindowsTerminal.Tests.ps1) |
+| Winget | [New-Winget.ps1](Scripts/New-Winget.ps1) | [New-Winget.Tests.ps1](Tests/New-Winget.Tests.ps1) |
 | WinMerge | [New-WinMerge.ps1](Scripts/New-WinMerge.ps1) | [New-WinMerge.Tests.ps1](Tests/New-WinMerge.Tests.ps1) |
 | WinSCP | [New-WinSCP.ps1](Scripts/New-WinSCP.ps1) | [New-WinSCP.Tests.ps1](Tests/New-WinSCP.Tests.ps1) |
 | Wireshark | [New-Wireshark.ps1](Scripts/New-Wireshark.ps1) | [New-Wireshark.Tests.ps1](Tests/New-Wireshark.Tests.ps1) |
 
-Apps that are not covered yet, and why, are listed in [ToDo.md](ToDo.md).
+Apps that are not covered yet, and why, are listed in [ToDo.md](ToDo.md). Scripts that cannot install silently are kept in the [Problems](Problems) folder.
 
 ### 🛠️ What did you build it with?
 Scripts works in Powershell 5.1 and newer.
