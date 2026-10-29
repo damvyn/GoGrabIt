@@ -137,7 +137,6 @@ $scriptPath = Join-Path -Path $installerDir -ChildPath "Install.ps1"
 try {
     Write-Host " * Create 'install.ps1' in '$installerDir'"
     $InstallTemplate | Out-File -FilePath $scriptPath -Encoding utf8
-    Write-Host "Done`n" -ForegroundColor Green
 } catch {
     Write-Host " * $($_.Exception.Message)" -ForegroundColor Red
     exit 1
@@ -147,4 +146,5 @@ try {
 # ------------------------------------------------------------------------------
 # install product
 if ( $Install ) { & $scriptPath }
+Write-Host "Done`n" -ForegroundColor Green
 # ------------------------------------------------------------------------------
